@@ -139,7 +139,7 @@ for i in range(0,len(brains)):
     cmd = "mv "+ascii_DV_fluo+"00000 "+ascii_DV_fluo
     call([cmd],shell=True)
 
-    cmd = "fsl5.0-fsl2ascii "+VD_fluo+" "+ascii_VD_fluo
+    cmd = "fsl2ascii "+VD_fluo+" "+ascii_VD_fluo
     call([cmd],shell=True)
     cmd = "mv "+ascii_VD_fluo+"00000 "+ascii_VD_fluo
     call([cmd],shell=True)

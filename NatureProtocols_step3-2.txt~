@@ -13,13 +13,13 @@
 ###########
 #
 # Folder containing the NIfTI files
-/media/nazib/Default/PhD_Project/CUBIC_Data/nii_individual/
+media/nazib/Default/PhD_Project/CUBIC_Data/nii_individual/
 #
 # Folder containing the registration files
 media/nazib/Default/PhD_Project/CUBIC_Data/ascii/
 #
 # Folder containing the merged files
-/media/nazib/Default/PhD_Project/CUBIC_Data/nii_merged/
+media/nazib/Default/PhD_Project/CUBIC_Data/nii_merged/
 #
 # Folder containing the registration files
 /media/nazib/Default/PhD_Project/CUBIC_Data/registration/

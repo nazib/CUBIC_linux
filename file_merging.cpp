@@ -1,25 +1,25 @@
 /*************************************************************************
- 
+
  file_merging.cpp | Merges two 3D brain images given as ASCII files based
  on the threshold values calculated during "edge detection".
  Called from fileMerging.py
  Please see the user manual for details.
- 
+
  Copyright (C) 2015, Dimitri Perrin
- 
+
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 3 of the License, or
  (at your option) any later version.
- 
+
  This program is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  GNU General Public License for more details.
- 
+
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- 
+
  ************************************************************************/
 
 
@@ -29,6 +29,7 @@
 #include <vector>
 #include <sstream>
 #include <iterator>
+#include<stdlib.h>
 
 #define BUFFER_SIZE 10000
 
@@ -50,13 +51,13 @@ int printTimestamp(string infoString) {
     time_t rawtime;
     struct tm * timeinfo;
     char buffer1 [15];
-    
+
     time (&rawtime);
     timeinfo = localtime (&rawtime);
     strftime (buffer1,80,"%H:%M:%S ->\t",timeinfo);
-    
+
     cout << buffer1 << infoString << endl;
-    
+
     return 0;
 }
 
@@ -121,61 +122,61 @@ int main(int argc, char* argv[]) {
     int i, j;
     int h, c, s;
     int n,m;
-    char *DV_ascii, *VD_ascii, *out_ascii;
+    //char *DV_ascii, *VD_ascii, *out_ascii;
     double **VD_data, **DV_data, **merged_data;
     double DV_value, VD_value, factor;
     ifstream file_in;
     ofstream file_out;
     string line;
 
-    
+/*
     if(argc!=9) {
         cout << "*** Error. Exactly eight arguments are needed.\n";
         return 9;
     }
-    
-    hor_size = atoi(argv[1]);
-    sag_size = atoi(argv[2]);
-    cor_size = atoi(argv[3]);
-    DV_ascii = argv[4];
-    VD_ascii = argv[5];
-    out_ascii = argv[6];
-    n = atoi(argv[7]);
-    m = atoi(argv[8]);
-    
+*/
+    hor_size = 169;//atoi(argv[1]);
+    sag_size = 640;//atoi(argv[2]);
+    cor_size = 540;//atoi(argv[3]);
+    char *DV_ascii = "media//nazib//Default//PhD_Project//CUBIC_Data//ascii//DV_001_nuclear.txt";//argv[4];
+    char *VD_ascii = "media/nazib/Default/PhD_Project/CUBIC_Data/ascii/VD_001_nuclear.txt";//argv[5];
+    char *out_ascii = "media/nazib/Default/PhD_Project/CUBIC_Data/ascii/merged_001_nuclear.txt";//argv[6];
+    n = 88;//atoi(argv[7]);
+    m = 91;//atoi(argv[8]);
+
     printTimestamp("Ready to start.");
-    
+
     VD_data = new double*[hor_size*cor_size];
     DV_data = new double*[hor_size*cor_size];
     merged_data = new double*[hor_size*cor_size];
-    
+
     for(i=0;i<hor_size*cor_size;++i) {
         VD_data[i] = new double[sag_size];
         DV_data[i] = new double[sag_size];
         merged_data[i] = new double[sag_size];
     }
 
-    
+
     /**************************************/
     /**     READING THE ASCII FILES      **/
     /**************************************/
-    
+
     printTimestamp("Starting to read the input files.");
 
     /* VD */
 
     printTimestamp(VD_ascii);
-    
-    file_in.open(VD_ascii);
+
+    file_in.open(VD_ascii,ifstream::in);
     if (not file_in.is_open()) {
         cout << "*** Error opening VD file.\n";
         return 2;
     }
-    
+
     i=0;
-    
+
     //    cout << "Reading VD." << endl;
-    
+
     /* We read line by line */
     while (getline(file_in,line)) {
         if(line.length()>0) {
@@ -191,26 +192,26 @@ int main(int argc, char* argv[]) {
                 return -1;
             }
             ++i;
-            
+
         }
     }
-    
+
     file_in.close();
-    
+
     /* DV */
-    
+
     printTimestamp(DV_ascii);
-    
+
     file_in.open(DV_ascii);
     if (not file_in.is_open()) {
         cout << "*** Error opening DV file.\n";
         return 2;
     }
-    
+
     i=0;
-    
+
     //    cout << "Reading DV." << endl;
-    
+
     /* We read line by line */
     while (getline(file_in,line)) {
         if(line.length()>0) {
@@ -226,23 +227,23 @@ int main(int argc, char* argv[]) {
                 return -1;
             }
             ++i;
-            
+
         }
     }
-    
+
     file_in.close();
-    
-    
-    
+
+
+
     /************************************/
     /**     PROCESSING THE FILES      **/
     /************************************/
-    
+
     printTimestamp("Starting to combine the horizontal slices.");
-    
-    
+
+
     for(h=0; h<hor_size; ++h) {
-        
+
         for(c=0; c<cor_size; ++c) {
             for(s=0; s<sag_size; ++s) {
                 VD_value = VD_data[h*cor_size+c][s];
@@ -251,10 +252,10 @@ int main(int argc, char* argv[]) {
                 merged_data[h*cor_size+c][s] = factor*DV_value + (1-factor)*VD_value;
             }
         }
-        
+
     }
-    
-    
+
+
     printTimestamp("Saving the results.");
 
     file_out.open(out_ascii);
@@ -262,7 +263,7 @@ int main(int argc, char* argv[]) {
         cout << "*** Error opening output file.\n";
         return 3;
     }
-    
+
     for(i=0; i<hor_size*cor_size; ++i) {
         for(j=0; j<sag_size; ++j) {
             int val = (int)merged_data[i][j];
@@ -272,10 +273,10 @@ int main(int argc, char* argv[]) {
     }
     file_out << endl;
 
-    
+
     printTimestamp("Freeing memory.");
 
-    
+
     for(i=hor_size*cor_size-1; i>=0; --i) {
         delete[] DV_data[i];
         delete[] VD_data[i];
@@ -284,7 +285,7 @@ int main(int argc, char* argv[]) {
     delete[] DV_data;
     delete[] VD_data;
     delete[] merged_data;
-    
+
     printTimestamp("Done.");
     return 0;
 }
